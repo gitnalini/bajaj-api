@@ -13,6 +13,7 @@ console.log(process.env.PORT);
 // POST Route for /bfhl
 app.post('/bfhl', (req, res) => {
     const { data, file_b64 } = req.body;
+    const flag = req.headers.flag
     let numbers = [];
     let alphabets = [];
     let highestLowercase = '';
@@ -36,6 +37,10 @@ app.post('/bfhl', (req, res) => {
     let fileMimeType = '';
     let fileSizeKB = 0;
 
+      const name = flag ? "Raghav davesar" : "Nalini Patidar";
+    const email = flag ? "rd3853@srmist.edu.in" : "np2800@srmist.edu.in";
+   const roll=flag ? "RA2111004010387" : "RA2111004010421";
+
     if (file_b64) {
         try {
             const fileBuffer = Buffer.from(file_b64, 'base64');
@@ -49,9 +54,9 @@ app.post('/bfhl', (req, res) => {
     else{
       res.json({
         is_success: true,
-        user_id: "john_doe_17091999",  // Hardcoded as per example
-        email: "john@xyz.com",
-        roll_number: "ABCD123",
+        user_id: name,  // Hardcoded as per example
+        email: email,
+        roll_number: roll,
         numbers: numbers,
         alphabets: alphabets,
         highest_lowercase_alphabet: [highestLowercase],
@@ -62,9 +67,9 @@ app.post('/bfhl', (req, res) => {
     // Response
     res.json({
         is_success: true,
-        user_id: "Nalini patidar",  // Hardcoded as per example
-        email: "np2800@srmist.edu.in",
-        roll_number: "RA2111004010421",
+        user_id: name,  // Hardcoded as per example
+        email: email,
+        roll_number: roll,
         numbers: numbers,
         alphabets: alphabets,
         highest_lowercase_alphabet: [highestLowercase],
