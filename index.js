@@ -1,9 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const multer = require('multer');
 const mime = require('mime-types');
 const cors = require('cors');
- 
+
 require('dotenv').config();
 const app = express();
 app.use(cors());
@@ -13,7 +12,7 @@ console.log(process.env.PORT);
 // POST Route for /bfhl
 app.post('/bfhl', (req, res) => {
     const { data, file_b64 } = req.body;
-    const flag = req.headers.flag
+    const flag = req.headers.flag === 'true';  // Check if flag is true
     let numbers = [];
     let alphabets = [];
     let highestLowercase = '';
@@ -32,50 +31,40 @@ app.post('/bfhl', (req, res) => {
         });
     }
 
-    // File validation (Base64 decoding)
+    // Use the flag if present, else default values
+    const name = flag ? "Raghav Davesar" : "Nalini Patidar";
+    const email = flag ? "rd3853@srmist.edu.in" : "np2800@srmist.edu.in";
+    const roll = flag ? "RA2111004010387" : "RA2111004010421";
+
+    // Initialize file validation variables
     let fileValid = false;
     let fileMimeType = '';
     let fileSizeKB = 0;
 
-      const name = flag ? "Raghav davesar" : "Nalini Patidar";
-    const email = flag ? "rd3853@srmist.edu.in" : "np2800@srmist.edu.in";
-   const roll=flag ? "RA2111004010387" : "RA2111004010421";
-
+    // Check if file_b64 exists and process it
     if (file_b64) {
         try {
             const fileBuffer = Buffer.from(file_b64, 'base64');
             fileValid = true;
             fileMimeType = mime.lookup(fileBuffer);
-            fileSizeKB = (fileBuffer.length / 1024).toFixed(2); // KB
+            fileSizeKB = (fileBuffer.length / 1024).toFixed(2); // Convert file size to KB
         } catch (err) {
-            fileValid = false;
+            fileValid = false;  // If file processing fails, mark as invalid
         }
     }
-    else{
-      res.json({
-        is_success: true,
-        user_id: name,  // Hardcoded as per example
-        email: email,
-        roll_number: roll,
-        numbers: numbers,
-        alphabets: alphabets,
-        highest_lowercase_alphabet: [highestLowercase],
-        fileValid:false
-    });
-    }
 
-    // Response
+    // Send response even if file_b64 is missing
     res.json({
         is_success: true,
-        user_id: name,  // Hardcoded as per example
+        user_id: name,
         email: email,
         roll_number: roll,
         numbers: numbers,
         alphabets: alphabets,
         highest_lowercase_alphabet: [highestLowercase],
-        file_valid: fileValid,
-        file_mime_type: fileMimeType,
-        file_size_kb: fileSizeKB
+        file_valid: file_b64 ? fileValid : false,  // Only validate file if present
+        file_mime_type: fileMimeType || '',        // Default to empty string if no file
+        file_size_kb: fileSizeKB || 0              // Default to 0 if no file
     });
 });
 
